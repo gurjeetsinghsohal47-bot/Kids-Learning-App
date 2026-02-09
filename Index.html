@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8B5CF6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Fun Learning App for Kids - Class 1 to 5 - Math, English, Hindi, Science, GK">
+    <title>🎓 Kids Learning App</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .animate-bounce {
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .btn-hover:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn-hover:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Question Bank
+        const questionBank = {
+            math: {
+                1: [
+                    { q: "2 + 3 = ?", options: ["4", "5", "6", "7"], correct: 1 },
+                    { q: "कौन सा बड़ा है?", options: ["5", "3", "7", "4"], correct: 2 },
+                    { q: "1 + 1 = ?", options: ["1", "2", "3", "4"], correct: 1 },
+                    { q: "3 - 1 = ?", options: ["1", "2", "3", "4"], correct: 1 },
+                    { q: "कौन सा छोटा है?", options: ["8", "2", "9", "5"], correct: 1 },
+                    { q: "4 + 2 = ?", options: ["5", "6", "7", "8"], correct: 1 },
+                    { q: "5 - 3 = ?", options: ["1", "2", "3", "4"], correct: 1 }
+                ],
+                2: [
+                    { q: "5 + 7 = ?", options: ["10", "11", "12", "13"], correct: 2 },
+                    { q: "9 - 4 = ?", options: ["4", "5", "6", "7"], correct: 1 },
+                    { q: "2 × 3 = ?", options: ["5", "6", "7", "8"], correct: 1 },
+                    { q: "10 ÷ 2 = ?", options: ["3", "4", "5", "6"], correct: 2 },
+                    { q: "6 + 8 = ?", options: ["12", "13", "14", "15"], correct: 2 }
+                ],
+                3: [
+                    { q: "12 + 18 = ?", options: ["28", "29", "30", "31"], correct: 2 },
+                    { q: "5 × 6 = ?", options: ["25", "30", "35", "40"], correct: 1 },
+                    { q: "20 - 7 = ?", options: ["12", "13", "14", "15"], correct: 1 },
+                    { q: "24 ÷ 4 = ?", options: ["4", "5", "6", "7"], correct: 2 },
+                    { q: "7 × 8 = ?", options: ["54", "55", "56", "57"], correct: 2 }
+                ],
+                4: [
+                    { q: "45 + 67 = ?", options: ["110", "111", "112", "113"], correct: 2 },
+                    { q: "8 × 9 = ?", options: ["64", "72", "81", "90"], correct: 1 },
+                    { q: "100 - 37 = ?", options: ["61", "62", "63", "64"], correct: 2 },
+                    { q: "144 ÷ 12 = ?", options: ["10", "11", "12", "13"], correct: 2 }
+                ],
+                5: [
+                    { q: "125 + 248 = ?", options: ["363", "373", "383", "393"], correct: 1 },
+                    { q: "12 × 15 = ?", options: ["170", "180", "190", "200"], correct: 1 },
+                    { q: "144 ÷ 12 = ?", options: ["10", "11", "12", "13"], correct: 2 },
+                    { q: "256 - 89 = ?", options: ["165", "166", "167", "168"], correct: 2 }
+                ]
+            },
+            english: {
+                1: [
+                    { q: "कौन सा vowel है?", options: ["B", "A", "C", "D"], correct: 1 },
+                    { q: "Cat का पहला letter क्या है?", options: ["A", "B", "C", "D"], correct: 2 },
+                    { q: "Which is a color?", options: ["Dog", "Red", "Run", "Eat"], correct: 1 },
+                    { q: "Apple starts with?", options: ["A", "B", "C", "D"], correct: 0 }
+                ],
+                2: [
+                    { q: "Opposite of 'Big'?", options: ["Large", "Small", "Huge", "Tall"], correct: 1 },
+                    { q: "A group of sheep is called?", options: ["Pack", "Flock", "Herd", "School"], correct: 1 },
+                    { q: "Plural of 'Boy'?", options: ["Boies", "Boys", "Boyes", "Boy"], correct: 1 }
+                ],
+                3: [
+                    { q: "Choose correct spelling:", options: ["Frend", "Friend", "Freind", "Frind"], correct: 1 },
+                    { q: "Plural of 'Child'?", options: ["Childs", "Children", "Childes", "Childrens"], correct: 1 },
+                    { q: "Past tense of 'eat'?", options: ["Eated", "Ate", "Eaten", "Eating"], correct: 1 }
+                ],
+                4: [
+                    { q: "Synonym of 'Happy'?", options: ["Sad", "Joyful", "Angry", "Tired"], correct: 1 },
+                    { q: "Which is an adjective?", options: ["Run", "Beautiful", "Quickly", "Jump"], correct: 1 },
+                    { q: "Antonym of 'Hot'?", options: ["Warm", "Cold", "Cool", "Heat"], correct: 1 }
+                ],
+                5: [
+                    { q: "Past tense of 'Go'?", options: ["Goed", "Gone", "Went", "Going"], correct: 2 },
+                    { q: "A sentence must have:", options: ["Subject only", "Verb only", "Subject & Verb", "None"], correct: 2 },
+                    { q: "Which is a pronoun?", options: ["Table", "She", "Run", "Happy"], correct: 1 }
+                ]
+            },
+            hindi: {
+                1: [
+                    { q: "क से क्या होता है?", options: ["कबूतर", "खरगोश", "गाय", "घर"], correct: 0 },
+                    { q: "स्वर कितने होते हैं?", options: ["10", "11", "12", "13"], correct: 1 },
+                    { q: "ख का मात्रा?", options: ["आ", "इ", "उ", "ए"], correct: 0 }
+                ],
+                2: [
+                    { q: "'आम' का बहुवचन?", options: ["आमों", "आम", "आमें", "आमे"], correct: 0 },
+                    { q: "विपरीत शब्द: बड़ा", options: ["लंबा", "छोटा", "मोटा", "पतला"], correct: 1 },
+                    { q: "श में कितनी मात्रा है?", options: ["0", "1", "2", "3"], correct: 0 }
+                ],
+                3: [
+                    { q: "कौन सा लिंग है: लड़का", options: ["स्त्रीलिंग", "पुल्लिंग", "उभयलिंग", "कोई नहीं"], correct: 1 },
+                    { q: "'पेड़' का पर्यायवाची?", options: ["वृक्ष", "फूल", "पत्ता", "जड़"], correct: 0 },
+                    { q: "वचन बदलो: गाय", options: ["गायें", "गायों", "गाई", "गाए"], correct: 0 }
+                ],
+                4: [
+                    { q: "'हाथी' में कौन सा वर्ण है?", options: ["ह, थ, ई", "ह, आ, थ, ई", "ह, ा, थ, ी", "सभी"], correct: 2 },
+                    { q: "संज्ञा किसे कहते हैं?", options: ["नाम", "काम", "गुण", "संख्या"], correct: 0 }
+                ],
+                5: [
+                    { q: "क्रिया किसे कहते हैं?", options: ["नाम", "काम", "गुण", "संख्या"], correct: 1 },
+                    { q: "विशेषण क्या है?", options: ["नाम", "गुण", "काम", "स्थान"], correct: 1 }
+                ]
+            },
+            science: {
+                1: [
+                    { q: "कौन सा जानवर उड़ता है?", options: ["कुत्ता", "गाय", "चिड़िया", "बिल्ली"], correct: 2 },
+                    { q: "हमें रोशनी कहाँ से मिलती है?", options: ["सूरज", "चाँद", "तारे", "पानी"], correct: 0 },
+                    { q: "पेड़ हमें क्या देते हैं?", options: ["पानी", "ऑक्सीजन", "आग", "पत्थर"], correct: 1 }
+                ],
+                2: [
+                    { q: "पौधों को क्या चाहिए?", options: ["पानी", "धूप", "हवा", "सभी"], correct: 3 },
+                    { q: "कितनी इंद्रियाँ होती हैं?", options: ["3", "4", "5", "6"], correct: 2 },
+                    { q: "दिन में कौन दिखता है?", options: ["चाँद", "सूरज", "तारे", "कोई नहीं"], correct: 1 }
+                ],
+                3: [
+                    { q: "सबसे बड़ा ग्रह कौन सा है?", options: ["पृथ्वी", "मंगल", "बृहस्पति", "शनि"], correct: 2 },
+                    { q: "पानी के तीन रूप?", options: ["बर्फ, पानी, भाप", "केवल पानी", "बर्फ और पानी", "कोई नहीं"], correct: 0 },
+                    { q: "पृथ्वी का उपग्रह?", options: ["सूरज", "चाँद", "मंगल", "शुक्र"], correct: 1 }
+                ],
+                4: [
+                    { q: "प्रकाश संश्लेषण किसमें होता है?", options: ["जानवर", "पौधे", "पत्थर", "पानी"], correct: 1 },
+                    { q: "हृदय क्या करता है?", options: ["सोचता", "पंप करता", "देखता", "सुनता"], correct: 1 }
+                ],
+                5: [
+                    { q: "मनुष्य में कितनी हड्डियाँ होती हैं?", options: ["106", "206", "306", "406"], correct: 1 },
+                    { q: "सबसे बड़ा अंग कौन सा है?", options: ["दिल", "फेफड़े", "त्वचा", "लीवर"], correct: 2 }
+                ]
+            },
+            gk: {
+                1: [
+                    { q: "भारत की राजधानी?", options: ["मुंबई", "दिल्ली", "कोलकाता", "चेन्नई"], correct: 1 },
+                    { q: "तिरंगे में कितने रंग हैं?", options: ["2", "3", "4", "5"], correct: 1 },
+                    { q: "राष्ट्रीय पक्षी?", options: ["कबूतर", "मोर", "तोता", "चील"], correct: 1 }
+                ],
+                2: [
+                    { q: "हफ्ते में कितने दिन होते हैं?", options: ["5", "6", "7", "8"], correct: 2 },
+                    { q: "साल में कितने महीने होते हैं?", options: ["10", "11", "12", "13"], correct: 2 },
+                    { q: "राष्ट्रीय फल?", options: ["सेब", "आम", "केला", "अंगूर"], correct: 1 }
+                ],
+                3: [
+                    { q: "भारत के पहले प्रधानमंत्री?", options: ["गांधी जी", "नेहरू जी", "पटेल", "आज़ाद"], correct: 1 },
+                    { q: "स्वतंत्रता दिवस कब है?", options: ["26 जनवरी", "15 अगस्त", "2 अक्टूबर", "14 नवंबर"], correct: 1 }
+                ],
+                4: [
+                    { q: "ताजमहल कहाँ है?", options: ["दिल्ली", "आगरा", "जयपुर", "लखनऊ"], correct: 1 },
+                    { q: "भारत में कितने राज्य हैं?", options: ["28", "29", "30", "31"], correct: 0 }
+                ],
+                5: [
+                    { q: "संविधान कब लागू हुआ?", options: ["1947", "1948", "1949", "1950"], correct: 3 },
+                    { q: "सबसे लंबी नदी?", options: ["यमुना", "गंगा", "नर्मदा", "कृष्णा"], correct: 1 }
+                ]
+            }
+        };
+
+        const subjects = [
+            { id: 'math', name: 'Math', emoji: '🔢', color: 'from-blue-400 to-blue-600' },
+            { id: 'english', name: 'English', emoji: '📚', color: 'from-purple-400 to-purple-600' },
+            { id: 'hindi', name: 'हिन्दी', emoji: '✍️', color: 'from-orange-400 to-orange-600' },
+            { id: 'science', name: 'Science', emoji: '🔬', color: 'from-green-400 to-green-600' },
+            { id: 'gk', name: 'GK', emoji: '🌟', color: 'from-pink-400 to-pink-600' }
+        ];
+
+        class KidsLearningApp {
+            constructor() {
+                this.state = {
+                    screen: 'home',
+                    selectedClass: null,
+                    selectedSubject: null,
+                    currentQuestion: 0,
+                    score: 0,
+                    streak: 0,
+                    totalPoints: parseInt(localStorage.getItem('totalPoints') || '0'),
+                    level: parseInt(localStorage.getItem('level') || '1'),
+                    selectedAnswer: null,
+                    showFeedback: false,
+                    questions: [],
+                    answeredCorrectly: false
+                };
+                this.render();
+            }
+
+            setState(newState) {
+                this.state = { ...this.state, ...newState };
+                this.render();
+            }
+
+            startQuiz(subject) {
+                const subjectQuestions = questionBank[subject.id]?.[this.state.selectedClass] || [];
+                this.setState({
+                    selectedSubject: subject,
+                    questions: subjectQuestions,
+                    currentQuestion: 0,
+                    score: 0,
+                    streak: 0,
+                    selectedAnswer: null,
+                    showFeedback: false,
+                    screen: 'quiz'
+                });
+            }
+
+            handleAnswer(answerIndex) {
+                if (this.state.showFeedback) return;
+                
+                const isCorrect = answerIndex === this.state.questions[this.state.currentQuestion].correct;
+                
+                let newState = {
+                    selectedAnswer: answerIndex,
+                    answeredCorrectly: isCorrect,
+                    showFeedback: true
+                };
+
+                if (isCorrect) {
+                    const points = 10 + (this.state.streak * 5);
+                    const newTotalPoints = this.state.totalPoints + points;
+                    const newLevel = newTotalPoints >= this.state.level * 100 ? this.state.level + 1 : this.state.level;
+                    
+                    localStorage.setItem('totalPoints', newTotalPoints);
+                    localStorage.setItem('level', newLevel);
+                    
+                    newState = {
+                        ...newState,
+                        score: this.state.score + 1,
+                        streak: this.state.streak + 1,
+                        totalPoints: newTotalPoints,
+                        level: newLevel
+                    };
+                } else {
+                    newState.streak = 0;
+                }
+
+                this.setState(newState);
+            }
+
+            nextQuestion() {
+                if (this.state.currentQuestion < this.state.questions.length - 1) {
+                    this.setState({
+                        currentQuestion: this.state.currentQuestion + 1,
+                        selectedAnswer: null,
+                        showFeedback: false
+                    });
+                } else {
+                    this.setState({ screen: 'result' });
+                }
+            }
+
+            renderHome() {
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-blue-400 p-6 flex flex-col items-center justify-center fade-in">
+                        <div class="text-center mb-8 animate-bounce">
+                            <h1 class="text-5xl font-bold text-white mb-2 drop-shadow-lg">🎓 Fun Learning!</h1>
+                            <p class="text-white text-xl">Learn करो, Enjoy करो! 🚀</p>
+                        </div>
+
+                        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+                            <div class="flex justify-between items-center mb-6 bg-gradient-to-r from-yellow-200 to-yellow-300 p-4 rounded-2xl">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">🏆</span>
+                                    <div>
+                                        <p class="text-xs text-gray-600">Level</p>
+                                        <p class="font-bold text-lg text-gray-800">${this.state.level}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">⭐</span>
+                                    <div>
+                                        <p class="text-xs text-gray-600">Points</p>
+                                        <p class="font-bold text-lg text-gray-800">${this.state.totalPoints}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">अपनी Class चुनो! 📖</h2>
+                            
+                            <div class="grid grid-cols-5 gap-3 mb-4">
+                                ${[1, 2, 3, 4, 5].map(cls => `
+                                    <button
+                                        onclick="app.setState({ selectedClass: ${cls}, screen: 'subject' })"
+                                        class="aspect-square bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white rounded-2xl font-bold text-2xl shadow-lg btn-hover transition-all duration-200"
+                                    >
+                                        ${cls}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex gap-4">
+                            <span class="text-white text-4xl animate-pulse">🏅</span>
+                            <span class="text-yellow-300 text-4xl animate-pulse">⚡</span>
+                            <span class="text-white text-4xl animate-pulse">⭐</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderSubjectSelection() {
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-6 fade-in">
+                        <div class="max-w-2xl mx-auto">
+                            <button
+                                onclick="app.setState({ screen: 'home' })"
+                                class="mb-6 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full hover:bg-white/30 transition btn-hover"
+                            >
+                                ← वापस जाओ
+                            </button>
+
+                            <div class="text-center mb-8">
+                                <h2 class="text-4xl font-bold text-white mb-2 drop-shadow-lg">Class ${this.state.selectedClass} 🎯</h2>
+                                <p class="text-white text-lg">कौन सा subject पढ़ना है?</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${subjects.map(subject => {
+                                    const hasQuestions = questionBank[subject.id]?.[this.state.selectedClass]?.length > 0;
+                                    return `
+                                        <button
+                                            onclick="${hasQuestions ? `app.startQuiz(${JSON.stringify(subject)})` : ''}"
+                                            ${!hasQuestions ? 'disabled' : ''}
+                                            class="bg-white rounded-3xl p-6 shadow-xl ${hasQuestions ? 'btn-hover hover:shadow-2xl' : 'opacity-50 cursor-not-allowed'} transition-all duration-200"
+                                        >
+                                            <div class="w-16 h-16 bg-gradient-to-br ${subject.color} rounded-2xl flex items-center justify-center mb-4 mx-auto">
+                                                <span class="text-4xl">${subject.emoji}</span>
+                                            </div>
+                                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${subject.name}</h3>
+                                            ${hasQuestions ? `
+                                                <div class="flex items-center justify-center gap-2 text-gray-600">
+                                                    <span>→</span>
+                                                    <span class="text-sm">Start करो!</span>
+                                                </div>
+                                            ` : `
+                                                <p class="text-sm text-gray-500">Coming soon! 🚧</p>
+                                            `}
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderQuiz() {
+                if (!this.state.questions.length) return '';
+                const question = this.state.questions[this.state.currentQuestion];
+                
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-green-400 via-blue-400 to-purple-400 p-6 flex items-center justify-center fade-in">
+                        <div class="max-w-2xl w-full">
+                            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-6 flex justify-between items-center flex-wrap gap-2">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-white rounded-full px-4 py-2">
+                                        <span class="font-bold text-gray-800">Q ${this.state.currentQuestion + 1}/${this.state.questions.length}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-yellow-400 rounded-full px-4 py-2">
+                                        <span class="text-xl">⚡</span>
+                                        <span class="font-bold text-yellow-800">Streak: ${this.state.streak}</span>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-full px-4 py-2">
+                                    <span class="font-bold text-gray-800">Score: ${this.state.score}</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-3xl shadow-2xl p-8">
+                                <div class="mb-8">
+                                    <h3 class="text-3xl font-bold text-gray-800 text-center mb-6">
+                                        ${question.q}
+                                    </h3>
+
+                                    <div class="grid grid-cols-1 gap-4">
+                                        ${question.options.map((option, index) => {
+                                            let buttonClass = "w-full p-6 rounded-2xl font-bold text-xl transition-all duration-200 btn-hover ";
+                                            
+                                            if (this.state.showFeedback) {
+                                                if (index === question.correct) {
+                                                    buttonClass += "bg-gradient-to-r from-green-400 to-green-600 text-white shadow-lg scale-105";
+                                                } else if (index === this.state.selectedAnswer && !this.state.answeredCorrectly) {
+                                                    buttonClass += "bg-gradient-to-r from-red-400 to-red-600 text-white";
+                                                } else {
+                                                    buttonClass += "bg-gray-100 text-gray-400";
+                                                }
+                                            } else {
+                                                buttonClass += "bg-gradient-to-r from-blue-100 to-purple-100 hover:from-blue-200 hover:to-purple-200 text-gray-800 shadow-md hover:shadow-xl";
+                                            }
+
+                                            return `
+                                                <button
+                                                    onclick="app.handleAnswer(${index})"
+                                                    ${this.state.showFeedback ? 'disabled' : ''}
+                                                    class="${buttonClass}"
+                                                >
+                                                    ${option}
+                                                    ${this.state.showFeedback && index === question.correct ? ' ✅' : ''}
+                                                    ${this.state.showFeedback && index === this.state.selectedAnswer && !this.state.answeredCorrectly ? ' ❌' : ''}
+                                                </button>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+
+                                ${this.state.showFeedback ? `
+                                    <div class="text-center">
+                                        ${this.state.answeredCorrectly ? `
+                                            <div class="bg-green-100 p-6 rounded-2xl mb-4 animate-pulse">
+                                                <p class="text-3xl mb-2">🎉</p>
+                                                <p class="text-2xl font-bold text-green-800">Shabash! Correct! 🌟</p>
+                                                <p class="text-green-700">+${10 + (this.state.streak * 5)} points!</p>
+                                            </div>
+                                        ` : `
+                                            <div class="bg-red-100 p-6 rounded-2xl mb-4">
+                                                <p class="text-3xl mb-2">💪</p>
+                                                <p class="text-2xl font-bold text-red-800">Koi baat nahi!</p>
+                                                <p class="text-red-700">Try karte raho!</p>
+                                            </div>
+                                        `}
+                                        
+                                        <button
+                                            onclick="app.nextQuestion()"
+                                            class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full font-bold text-xl hover:from-purple-600 hover:to-pink-600 btn-hover transition-all shadow-lg"
+                                        >
+                                            ${this.state.currentQuestion < this.state.questions.length - 1 ? 'अगला Question →' : 'Result देखो! 🏆'}
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderResult() {
+                const percentage = ((this.state.score / this.state.questions.length) * 100).toFixed(0);
+                const passed = percentage >= 60;
+
+                return `
+                    <div class="min-h-screen bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 p-6 flex items-center justify-center fade-in">
+                        <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
+                            <div class="mb-6">
+                                ${passed ? `
+                                    <div class="text-8xl mb-4 animate-bounce">🏆</div>
+                                ` : `
+                                    <div class="text-8xl mb-4">💪</div>
+                                `}
+                                <h2 class="text-4xl font-bold text-gray-800 mb-2">
+                                    ${passed ? 'Bahut Badhiya!' : 'Good Try!'}
+                                </h2>
+                                <p class="text-gray-600 text-lg">
+                                    ${passed ? 'Tum to champion ho! 🌟' : 'Practice makes perfect! 📚'}
+                                </p>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 mb-6">
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div class="bg-white rounded-xl p-4">
+                                        <p class="text-gray-600 text-sm mb-1">Score</p>
+                                        <p class="text-3xl font-bold text-gray-800">${this.state.score}/${this.state.questions.length}</p>
+                                    </div>
+                                    <div class="bg-white rounded-xl p-4">
+                                        <p class="text-gray-600 text-sm mb-1">Percentage</p>
+                                        <p class="text-3xl font-bold text-gray-800">${percentage}%</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-xl p-4">
+                                    <p class="text-gray-600 text-sm mb-1">Current Level</p>
+                                    <div class="flex items-center justify-center gap-2">
+                                        <span class="text-2xl">🏆</span>
+                                        <p class="text-3xl font-bold text-gray-800">Level ${this.state.level}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-3">
+                                <button
+                                    onclick="app.startQuiz(${JSON.stringify(this.state.selectedSubject)})"
+                                    class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-full font-bold text-lg hover:from-green-600 hover:to-green-700 btn-hover transition-all shadow-lg"
+                                >
+                                    🔄 फिर से Try करो!
+                                </button>
+                                <button
+                                    onclick="app.setState({ screen: 'subject' })"
+                                    class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-4 rounded-full font-bold text-lg hover:from-blue-600 hover:to-purple-600 btn-hover transition-all shadow-lg"
+                                >
+                                    📚 दूसरा Subject चुनो
+                                </button>
+                                <button
+                                    onclick="app.setState({ screen: 'home' })"
+                                    class="w-full bg-gray-200 text-gray-700 px-6 py-4 rounded-full font-bold text-lg hover:bg-gray-300 btn-hover transition-all"
+                                >
+                                    🏠 Home जाओ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            render() {
+                const appElement = document.getElementById('app');
+                if (!appElement) return;
+
+                let html = '';
+                switch (this.state.screen) {
+                    case 'home':
+                        html = this.renderHome();
+                        break;
+                    case 'subject':
+                        html = this.renderSubjectSelection();
+                        break;
+                    case 'quiz':
+                        html = this.renderQuiz();
+                        break;
+                    case 'result':
+                        html = this.renderResult();
+                        break;
+                }
+                
+                appElement.innerHTML = html;
+            }
+        }
+
+        // Initialize app
+        let app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app = new KidsLearningApp();
+        });
+    </script>
+</body>
+</html>
